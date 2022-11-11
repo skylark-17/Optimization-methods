@@ -2,7 +2,6 @@ import numpy as np
 from scipy.interpolate import interp1d
 
 
-
 def one_dim(a, c, f, eps=1e-6, max_steps=100):
     K = (3 - np.sqrt(5)) / 2
     x = w = v = a + K * (c - a)
@@ -63,6 +62,7 @@ def one_dim(a, c, f, eps=1e-6, max_steps=100):
                     fv = fw
                     fw = fu
     return [x, f(x)]
+
 
 def one_dim_with_derivative(a, c, f, df, eps, max_steps):
     x = w = v = (a + c) / 2
