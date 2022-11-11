@@ -1,17 +1,21 @@
 import numpy as np
 
+from result import Result
+
 
 def find_u(x1, x2, x3, y1, y2, y3):
     a = (y2 * x3 + y1 * x2 + y3 * x1 - y1 * y3 - y2 * x1 - y3 * x2) / (
-                (x1 - x2) * (x3 * x3 + x1 * x2 - x1 * x3 - x2 * x3))
+            (x1 - x2) * (x3 * x3 + x1 * x2 - x1 * x3 - x2 * x3))
     b = (y1 - y3 - a * (x1 * x1 - x3 * x3)) / (x1 - x3)
     return -b / (2 * a)
 
 
 def one_dim(a, c, f, eps=1e-6, max_steps=100):
+    res = Result()
     K = (3 - np.sqrt(5)) / 2
     x = w = v = a + K * (c - a)
     fx = fw = fv = f(x)
+    res.add_point(x, fx)
     d = e = c - a
     for i in range(max_steps):
         g = e
@@ -48,6 +52,7 @@ def one_dim(a, c, f, eps=1e-6, max_steps=100):
             fv = fw
             fw = fx
             fx = fu
+            res.add_point(x, fx)
         else:
             if u >= x:
                 c = u
@@ -64,7 +69,8 @@ def one_dim(a, c, f, eps=1e-6, max_steps=100):
                     w = u
                     fv = fw
                     fw = fu
-    return x
+    res.set(x, fx)
+    return res
 
 
 def find_u_with_derivative(x1, x2, df1, df2):
@@ -74,9 +80,11 @@ def find_u_with_derivative(x1, x2, df1, df2):
 
 
 def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
+    res = Result()
     x = w = v = (a + c) / 2
     fx = fw = fv = f(x)
     dfx = dfw = dfv = df(x)
+    res.add_point(x, fx)
     d = e = c - a
     for i in range(max_steps):
         g = e
@@ -129,6 +137,7 @@ def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
             dfv = dfw
             dfw = dfx
             dfx = dfu
+            res.add_point(x, fx)
         else:
             if u >= x:
                 c = u
@@ -146,4 +155,5 @@ def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
                     v = u
                     fv = fu
                     dfv = dfu
-    return x
+    res.set(x, fx, dfx)
+    return res
