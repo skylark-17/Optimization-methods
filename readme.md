@@ -1,0 +1,1 @@
+http://www.machinelearning.ru/wiki/images/4/4d/MOMO16_min1d.pdf
