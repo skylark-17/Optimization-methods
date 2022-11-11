@@ -15,8 +15,8 @@ def make_plot(a, c, f, df=None):
     fx0 = res.fx
     grid = np.linspace(a, c, 1000)
     plt.plot(grid, f(grid), color='blue')
-    plt.plot(points, values, color='red')
-    plt.scatter(points, values, color='black')
+    plt.plot(points, values, color='red', alpha=0.3)
+    plt.scatter(points, values, color='black', alpha=0.3)
     plt.title("Brents method" if df is None else "Brents method with derivative")
     plt.xlabel(f'$x$')
     plt.ylabel(f'$f(x)$')
