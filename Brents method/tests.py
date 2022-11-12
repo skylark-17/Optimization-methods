@@ -15,8 +15,6 @@ class MyTestCase(unittest.TestCase):
         res_with_derivative = one_dim_with_derivative(a, c, f, df)
         self.assertAlmostEqual(res.x, 2.0, delta=1e-3)
         self.assertAlmostEqual(res_with_derivative.x, 2.0, delta=1e-3)
-        # print(res.points)
-        # print(res_with_derivative.points)
 
     def test_sin(self):
         a = -np.pi + 2 * np.pi
@@ -44,7 +42,7 @@ class MyTestCase(unittest.TestCase):
 
     def test_intricate_f_2(self):
         a = 0.1
-        c = 1
+        c = 10
         f = lambda x: np.exp(x ** 2 - 4 * np.sin(x)) + x ** ((np.log(x) + 2) / x)
         df = lambda x: np.exp(x ** 2 - 4 * np.sin(x)) * (2 * x - 4 * np.cos(x)) + (
                 (np.log(x) + 2) / x ** 2 + np.log(x) * (1 / x ** 2 - (np.log(x) + 2) / x ** 2)) * x ** (

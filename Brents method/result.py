@@ -22,4 +22,3 @@ class Result:
     def add_point(self, x, y):
         self.points = np.append(self.points, x)
         self.values = np.append(self.values, y)
-
