@@ -1,23 +1,26 @@
+from time import process_time
+
 import numpy as np
 
 from result import Result
 
 
-def find_u(x1, x2, x3, y1, y2, y3):
-    a = (y2 * x3 + y1 * x2 + y3 * x1 - y1 * y3 - y2 * x1 - y3 * x2) / (
-            (x1 - x2) * (x3 * x3 + x1 * x2 - x1 * x3 - x2 * x3))
-    b = (y1 - y3 - a * (x1 * x1 - x3 * x3)) / (x1 - x3)
-    return -b / (2 * a)
+def find_u(x1, x2, x3, f1, f2, f3):
+    return x2 - ((x2 - x1) ** 2 * (f2 - f3) - (x2 - x3) ** 2 * (f2 - f1)) / 2 / (
+            (x2 - x1) * (f2 - f3) - (x2 - x3) * (f2 - f1))
 
 
 def one_dim(a, c, f, eps=1e-6, max_steps=100):
+    time_start = process_time()
     res = Result()
     K = (3 - np.sqrt(5)) / 2
     x = w = v = a + K * (c - a)
     fx = fw = fv = f(x)
+    res.func_computations += 1
     res.add_point(x, fx)
     d = e = c - a
     for i in range(max_steps):
+        res.iterations += 1
         g = e
         e = d
         tol = eps * np.abs(x) + eps / 10
@@ -41,6 +44,7 @@ def one_dim(a, c, f, eps=1e-6, max_steps=100):
             u = x + np.sign(u - x) * tol
         d = np.abs(u - x)
         fu = f(u)
+        res.func_computations += 1
         if fu <= fx:
             if u >= x:
                 a = x
@@ -70,6 +74,7 @@ def one_dim(a, c, f, eps=1e-6, max_steps=100):
                     fv = fw
                     fw = fu
     res.set(x, fx)
+    res.time = process_time() - time_start
     return res
 
 
@@ -80,13 +85,17 @@ def find_u_with_derivative(x1, x2, df1, df2):
 
 
 def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
+    time_start = process_time()
     res = Result()
     x = w = v = (a + c) / 2
     fx = fw = fv = f(x)
+    res.func_computations += 1
     dfx = dfw = dfv = df(x)
+    res.derivative_computations += 1
     res.add_point(x, fx)
     d = e = c - a
     for i in range(max_steps):
+        res.iterations += 1
         g = e
         e = d
         accept_u1 = False
@@ -122,7 +131,9 @@ def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
             u = x + np.sign(u - x) * eps
         d = np.abs(u - x)
         fu = f(u)
+        res.func_computations += 1
         dfu = df(u)
+        res.derivative_computations += 1
         if fu <= fx:
             if u >= x:
                 a = x
@@ -156,4 +167,5 @@ def one_dim_with_derivative(a, c, f, df, eps=1e-6, max_steps=100):
                     fv = fu
                     dfv = dfu
     res.set(x, fx, dfx)
+    res.time = process_time() - time_start
     return res
